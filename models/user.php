@@ -135,7 +135,52 @@ class user
 					
                     $result = $this->_db->my_query($sql);
                     if($result)
-                    {
+                    {	
+						
+						require_once('class.phpmailer.php');
+						include("class.smtp.php"); // optional, gets called from within class.phpmailer.php if not already loaded
+
+						$mail             = new PHPMailer();
+
+						$body             = file_get_contents('template.html');
+						$body             = eregi_replace("[\]",'',$body);
+
+						$mail->IsSMTP(); // telling the class to use SMTP
+						$mail->Host       = "mail.gmail.com"; // SMTP server
+						$mail->SMTPDebug  = 2;                     // enables SMTP debug information (for testing)
+																   // 1 = errors and messages
+																   // 2 = messages only
+						$mail->SMTPAuth   = true;                  // enable SMTP authentication
+						$mail->SMTPSecure = "tls";                 // sets the prefix to the servier
+						$mail->Host       = "smtp.gmail.com";      // sets GMAIL as the SMTP server
+						$mail->Port       = 587;                   // set the SMTP port for the GMAIL server
+						$mail->Username   = "shoeradaroffical@gmail.com";  // GMAIL username
+						$mail->Password   = "shoeradar2014";            // GMAIL password
+
+						$mail->SetFrom('shoeradaroffical@gmail.com', 'Shoe Radar');
+
+						$mail->AddReplyTo("shoeradaroffical@gmail.com","Shoe Radar");
+
+						$mail->Subject    = "Registered Successfully";
+
+						$mail->AltBody    = "Congratulation!!! You registered successfully";
+						$mail->MsgHTML("Congratulation!!! You registered successfully");
+
+						$address = $emailid;
+						$mail->AddAddress($address,$name);
+
+						//$mail->AddAttachment("images/phpmailer.gif");      // attachment
+						//$mail->AddAttachment("images/phpmailer_mini.gif"); // attachment
+
+						if(!$mail->Send()) {
+						  echo "Mailer Error: " . $mail->ErrorInfo;
+						} else {
+						  echo "Message sent!";
+						}
+						
+						
+						
+						
                         $records_array['status']    = "True";
                         $records_array['message']   = "User register successfully.";
                     }
@@ -311,63 +356,63 @@ class user
 	*/
 	public function get_profile()
     {
-            if($_SERVER["REQUEST_METHOD"]=="POST")
-			{
-				$records_array          = array();				
-				$user_id	            = $_REQUEST['user_id'];
-                $see_profile_id	        = $_REQUEST['see_profile_id'];
-				if($user_id !="" && $see_profile_id !='')
-				{
-                    $sql_user="SELECT ava_users.id,display_name,user_dob,user_contactno,user_address,user_facebook_id,img_fullsize,img_resize,total_feed, count(distinct ava_ns_foll_to.following_to) as following_to,count(distinct ava_ns_foll_by.user_id) as following_by,(case when count(is_following.id)>0 then 1 else 0 end) as is_following FROM `ava_users` left join `ava_ns_follower_following` ava_ns_foll_to on `ava_ns_foll_to`.user_id=`ava_users`.`id` left join `ava_ns_follower_following` ava_ns_foll_by on `ava_ns_foll_by`.following_to=`ava_users`.`id` left join `ava_ns_follower_following` is_following on `is_following`.`following_to`='".$see_profile_id."' && `is_following`.`user_id`='".$user_id."' WHERE `ava_users`.`id`='".$see_profile_id."' and `role_id`=8";
-					$result_user = $this->_db->my_query($sql_user);
-					if($this->_db->my_num_rows($result_user) >= 1)
-					{
-                        $row = $this->_db->my_fetch_object($result_user);
-                        $profile_info=array();
-                        if(($row->id!='')&&isset($row->id))
-                        {
-                            $profile_info['name']               =   $row->display_name;
-							$profile_info['dob']                =   $row->user_dob;
-							$profile_info['contact_no']         =   $row->user_contactno;
-							$profile_info['address']            =   $row->user_address;
-							$profile_info['facebook_id']        =   $row->user_facebook_id;
-							$profile_info['follow_by']          =   '';//JSON_DECODE($row->follow_by,JSON_FORCE_OBJECT);
-							$profile_info['following_to']       =   '';//JSON_DECODE($row->following_to,JSON_FORCE_OBJECT);
-							$profile_info['total_follow_by']    =   $row->following_by;
-							$profile_info['total_following_to'] =   $row->following_to;
-							$profile_info['image_fullsize']     =   $row->img_fullsize;
-							$profile_info['image_resize']       =   $row->img_resize;
-							$profile_info['total_post']        	=   $row->total_feed;
-                            $profile_info['is_following']       =   $row->is_following;
-							$records_array['profile_data']      =   $profile_info;
-							$records_array['user_id']           =   $row->id;
-                            $records_array['status']            =   "True";
-                            $records_array['message']           =   "User details.";
-                        }
-                        else
-                        {
-                            $records_array['status']            =   "False";
-                            $records_array['message']           =   "User details are empty.";
-                        }
-                    } 
-				    else
-				    {						   
-                        $records_array['status']                =   "False";		
-                        $records_array['message']               =   "User id not present.";
-                    }           
-				}
-				else
-				{
-                    $records_array['status']                    =   "False";		
-                    $records_array['message']                   =   "User id or see profile id could not be blank.";
-				}
-                return $records_array;
-			}		
-			else
+       // if($_SERVER["REQUEST_METHOD"]=="POST")
+        {
+            $records_array      = array();				
+            $username	    = $_REQUEST['user_id'];
+           
+
+            if($username !="")
             {
-				return array("ERROR"=>"Send Data via POST");
-			}
+               
+                $sql_user="SELECT * from users where `id` ='".$username."'";
+                $result_user = $this->_db->my_query($sql_user);
+                if($this->_db->my_num_rows($result_user) >= 1)
+                {   
+                    
+                    $profile_info=array();
+                    $row = $this->_db->my_fetch_object($result_user);
+                   
+                    
+                     
+                       
+                        $records_array['user_id']        =   $row->id;
+						
+						$records_array['profile_picture']    = $row->profile_picture;
+						$records_array['biography']      =   $row->biography;
+                        $records_array['status']         =   "True";
+                        $records_array['message']        =   "Get Profile successfully.";
+                        
+                     
+                    
+                } 
+                else
+                {						   
+                    $records_array['status']            =   "False";		
+                    $records_array['message']           =   "No user present with this Username.";
+                }           
+            }
+            else
+            {
+                $records_array['status']                =   "False";
+                if(!isset($username))
+                {
+                    $records_array['message']           =   "Username  cannot be blank.";  
+                }
+               
+                else
+                {
+                    $records_array['message']           =   "Problem in Username id.";
+                }
+            }
+            return $records_array;
+        }		
+      //  else
+       // {
+       //     return array("ERROR"=>"Send Data via POST");
+       // }
 	}
+   
     
     /**
 	* @method get_my_profile
@@ -446,87 +491,61 @@ class user
 	* @return response message
 	* @link URL - http://hostname/nosave/services/user/update_profile
 	*/
-	public function update_profile()
-    {
-        if($_SERVER["REQUEST_METHOD"]=="POST")
+	function update_profile()
+	{
+	 if($_SERVER["REQUEST_METHOD"]=="POST")
         {
-            $records_array          = array();				
-            $profile_id	            = $_REQUEST['user_id'];
-            $display_name	        = $_REQUEST['display_name'];
-            $username		        = $_REQUEST['user_name'];	
-            $emailid	            = $_REQUEST['email_id'];
-            $contactno 	            = $_REQUEST['contact_no'];
-            $dob		            = $_REQUEST['dob'];						
-            $address	            = $_REQUEST['address']; 
-            if($profile_id !=""&&$emailid !='')
-            {
-                $sql_user="SELECT * FROM `ava_users` WHERE `id`='".$profile_id."' and `role_id`=8";
-                $result_user = $this->_db->my_query($sql_user);
-                if($this->_db->my_num_rows($result_user) >= 1)
-                {   
-                    $row = $this->_db->my_fetch_object($result_user);
-                    if($row->active!=1)
-                    {
-                        return $this->user_not_online();
-                    }
-                    $sql="update `ava_users` set `display_name`='".$display_name."', `username`='".$username."',`user_contactno`='".$contactno."', `user_dob`='".$dob."',`email`='".$emailid."', `user_address`='".$address."',`ns_updated_on`='".date('Y-m-d H:i:s')."'where id ='".$profile_id."'"; 
-                    $result = $this->_db->my_query($sql);
+
+			$records_array           = array();				
+            $user_id	     = $_REQUEST['user_id'];
+            $user_biography	             = $_REQUEST['user_biography'];
+			
+			$user_photo	             = $_REQUEST['user_photo'];
+			
+			///
+			  define('UPLOAD_DIR', '../image/');
+       
+		
+		$img = $_REQUEST['user_photo'];
+		
+        $img = str_replace('data:image/png;base64,', '', $img);//for png images
+		$img = str_replace('data:image/jpg;base64,', '', $img);//for png images
+        $img = str_replace(' ', '+', $img);
+        $data = base64_decode($img);
+		$unq_Id = uniqid();
+        $file = UPLOAD_DIR . $unq_Id . '.jpg';
+        $success=file_put_contents($file,$data);
+		
+		$user_photo = 'http://educesoftware.com/monty/image/'. $unq_Id .'.jpg';
+      //  print $success ? $file : 'Unable to save the file.';
+	/////////////////
+	
+				
+		$sql="INSERT INTO `uploadImage`(`item_uploadedBy`, `item_name`, `item_brand`,`item_type`,`item_year`,`item_color`,`item_photo`) 
+                   VALUES ('".$item_uploadedBy."','".$item_name."','".$item_brand."','".$item_type."','".$item_year."','".$item_color."','".$item_photo."')";
+				   
+		$sql="update users set biography = '".$user_biography."', profile_picture = '".$user_photo."' where `id`= '".$user_id."' ";		  
+		$result = $this->_db->my_query($sql);
                     if($result)
-                    {   
-                        $sql_user="SELECT * FROM `ava_users` where `id`='".$profile_id."'";
-                        $result_user = $this->_db->my_query($sql_user);
-                        if($this->_db->my_num_rows($result_user) >= 1)
-                        {   
-                            $profile_info=array();
-                            $row_detail = $this->_db->my_fetch_object($result_user);
-                            $profile_info['name']               =   $row_detail->display_name;
-                            $profile_info['dob']                =   $row_detail->user_dob;
-                            $profile_info['contact_no']         =   $row_detail->user_contactno;
-                            $profile_info['address']            =   $row_detail->user_address;
-                            $profile_info['facebook_id']        =   $row_detail->user_facebook_id;
-                            $profile_info['follow_by']          =   JSON_DECODE($row_detail->follow_by,JSON_FORCE_OBJECT);
-                            $profile_info['following_to']       =   JSON_DECODE($row_detail->following_to,JSON_FORCE_OBJECT);
-                            $profile_info['total_follow_by']    =   COUNT(JSON_DECODE($row_detail->follow_by,JSON_FORCE_OBJECT));
-                            $profile_info['total_following_to'] =   COUNT(JSON_DECODE($row_detail->following_to,JSON_FORCE_OBJECT));
-                            $profile_info['image_fullsize']     =   $row_detail->img_fullsize;
-                            $profile_info['image_resize']       =   $row_detail->img_resize;
-                            $profile_info['total_post']        	=   $row_detail->total_feed;
-                            $records_array['profile_data']      =   $profile_info;
-                            $records_array['user_id']           =   $row_detail->id;
-                            $records_array['status']        = "True";
-                            $records_array['message']       = "Profile updated successfully.";
-                        }
-                        else
-                        {
-                            $records_array['status']        = "FALSE";
-                            $records_array['message']       = "Unable to update profile.";
-                        }
-                        
+                    {
+                        $records_array['status']    = "True";
+                        $records_array['message']   = "Profile Updated successfully.";
                     }
                     else
                     {
-                        $records_array['status']        = "False";
-                        $records_array['message']       = "Problem in updating profile.";
+                        $records_array['status']    = "False";
+                        $records_array['message']   = "Problem in Updating Profile.";
                     }
-                } 
-                else
-                {						   
-                    $records_array['status']            = "False";		
-                    $records_array['message']           = "User id not present in database.";
-                }           
-            }
-            else
-            {
-                $records_array['status']                = "False";		
-                $records_array['message']               = "User id and email id could not be blank.";
-            }
-            return $records_array;
-        }		
-        else
-        {
-            return array("ERROR"=>"Send Data via POST");
-        }
+					 return $records_array;
+		}
+else{
+$records_array['status']    = "False";
+                        $records_array['message']   = "Not POST Method";
+return $records_array;
+}
+	
 	}
+
     /**
 	* @method feedimage
     * @param null

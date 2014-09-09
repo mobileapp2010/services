@@ -232,6 +232,60 @@ class like_dislike
        //     return array("ERROR"=>"Send Data via POST");
        // }
 	}
-   
+	/*@method get_like
+    * @param null
+	* @see public function 
+	* @access private
+	* @return response message
+	* @link URL - http://hostname/services/user/get_like/
+    */ 
+     function get_like()
+    {
+			$records_array                   = array();				
+            $photo_id	             = $_REQUEST['photo_id'];
+            if($photo_id!='')
+            {
+                $sql_check_photo_id="select * from `like` where `photo_id`=".$photo_id;
+                $result_photo_id=$this->_db->my_query($sql_check_photo_id);
+                if($this->_db->my_num_rows($result_photo_id) >= 1)
+                {
+                    $row=$this->_db->my_fetch_object($result_photo_id);
+                    
+					$select_data_sql="select `like`.*,`like`.`id` as `like_id`,`users`.`username` from `like` join `users` on `users`.`id`=`like`.`user_id` where `photo_id`='".$photo_id."' ORDER BY username ASC";
+                    $result=$this->_db->my_query($select_data_sql);
+                    if($result)
+                    {	$data_array=array();
+						while($row_info=$this->_db->my_fetch_object($result))
+						{
+							$info=array();
+							$info['username']=$row_info->username;
+							$info['user_id']=$row_info->user_id;
+							$data_array[]=$info;
+						}
+						$records_array['data']        	=   $data_array;
+						$records_array['status']        =   "TRUE";
+                        $records_array['message']       =   "Like user fetched successfully.";
+                    }
+                    else
+                    {
+                        $records_array['status']        =   "FALSE";
+                        $records_array['message']       =   "Problem in fetching like.";
+                    }
+                }
+                else
+                {
+                    $records_array['status']            =   "FALSE";
+                    $records_array['message']           =   "photo id not present.";
+                }
+                return $records_array;
+            }
+            else
+            {
+                $records_array['status']                =   "FALSE";
+                $records_array['message']               =   "Photo id could not be null.";
+                return $records_array;
+            }
+    }
+	
 }
 ?>
