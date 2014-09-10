@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 04, 2014 at 02:30 AM
+-- Generation Time: Sep 09, 2014 at 11:37 PM
 -- Server version: 5.5.37-cll
 -- PHP Version: 5.4.23
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `comment` longtext NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `comment`
@@ -43,7 +43,11 @@ INSERT INTO `comment` (`id`, `photo_id`, `user_id`, `comment`, `timestamp`) VALU
 (1, 41, 5, '"asdasdas"', '0000-00-00 00:00:00'),
 (2, 41, 5, '"asdasdas"', '0000-00-00 00:00:00'),
 (3, 41, 5, '"asdasdas"', '2014-09-02 19:56:22'),
-(4, 41, 5, '"asdasdas"', '2014-09-02 20:04:56');
+(4, 41, 5, '"asdasdas"', '2014-09-02 20:04:56'),
+(5, 41, 5, 'hi', '2014-09-08 14:58:49'),
+(6, 41, 5, 'hi', '2014-09-08 14:59:19'),
+(7, 42, 5, 'testcomment', '2014-09-08 17:10:37'),
+(8, 42, 5, 'hi', '2014-09-09 16:09:42');
 
 -- --------------------------------------------------------
 
@@ -57,19 +61,25 @@ CREATE TABLE IF NOT EXISTS `like` (
   `user_id` int(10) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='data' AUTO_INCREMENT=12 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='data' AUTO_INCREMENT=25 ;
 
 --
 -- Dumping data for table `like`
 --
 
 INSERT INTO `like` (`id`, `photo_id`, `user_id`, `timestamp`) VALUES
-(6, 41, 6, '2014-09-04 00:51:15'),
+(19, 41, 6, '2014-09-07 14:52:34'),
 (5, 42, 5, '2014-09-03 16:21:08'),
-(8, 42, 6, '2014-09-04 00:51:20'),
+(18, 42, 6, '2014-09-07 06:10:54'),
 (9, 43, 7, '2014-09-04 00:56:34'),
 (10, 42, 7, '2014-09-04 00:56:36'),
-(11, 41, 7, '2014-09-04 00:56:39');
+(11, 41, 7, '2014-09-04 00:56:39'),
+(12, 41, 5, '2014-09-04 16:14:49'),
+(20, 43, 6, '2014-09-07 14:52:39'),
+(21, 44, 6, '2014-09-07 15:02:33'),
+(22, 45, 6, '2014-09-07 15:13:53'),
+(23, 46, 6, '2014-09-07 22:02:42'),
+(24, 46, 5, '2014-09-09 16:22:18');
 
 -- --------------------------------------------------------
 
@@ -91,16 +101,19 @@ CREATE TABLE IF NOT EXISTS `uploadImage` (
   `item_likesNumber` int(10) NOT NULL DEFAULT '0',
   `item_shareNumber` int(10) DEFAULT NULL,
   PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=44 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=47 ;
 
 --
 -- Dumping data for table `uploadImage`
 --
 
 INSERT INTO `uploadImage` (`item_id`, `item_uploadedBy`, `item_name`, `item_brand`, `item_type`, `item_year`, `item_color`, `item_photo`, `timestamp`, `item_commentsNumber`, `item_likesNumber`, `item_shareNumber`) VALUES
-(41, 5, 'Test', 'Nike', 'Sneakers', '2012', 'Black', 'http://educesoftware.com/monty/image/5404a3944bc0e.jpg', '2014-09-01 16:49:24', 1, 1, NULL),
-(42, 5, 'Test', 'Nike', 'Sneakers', '2012', 'Black', 'http://educesoftware.com/monty/image/5404a3b0c3b55.jpg', '2014-09-01 16:49:52', 0, 3, NULL),
-(43, 5, 'Yoooo', 'Jordan', 'Sneakers', '2013', 'Black', 'http://educesoftware.com/monty/image/5404a85c9b7ba.jpg', '2014-09-01 17:09:48', 0, 1, NULL);
+(41, 5, 'Test', 'Nike', 'Sneakers', '2012', 'Black', 'http://educesoftware.com/monty/image/5404a3944bc0e.jpg', '2014-09-01 16:49:24', 3, 2, NULL),
+(42, 5, 'Test', 'Nike', 'Sneakers', '2012', 'Black', 'http://educesoftware.com/monty/image/5404a3b0c3b55.jpg', '2014-09-01 16:49:52', 2, 3, NULL),
+(43, 5, 'Yoooo', 'Jordan', 'Sneakers', '2013', 'Black', 'http://educesoftware.com/monty/image/5404a85c9b7ba.jpg', '2014-09-01 17:09:48', 0, 2, NULL),
+(44, 6, 'Converse 2.0', 'Converse', 'Casual', '2012', 'Purple', 'http://educesoftware.com/monty/image/540c736ce90c7.jpg', '2014-09-07 15:02:04', 0, 1, NULL),
+(45, 6, 'Jordan 13', 'Jordan', 'Sneakers', '2010', 'Blue', 'http://educesoftware.com/monty/image/540c76210cdd5.jpg', '2014-09-07 15:13:37', 0, 1, NULL),
+(46, 6, 'Nike Fly', 'Nike', 'Sneakers', '2012', 'Orange', 'http://educesoftware.com/monty/image/540cd5f263524.jpg', '2014-09-07 22:02:26', 0, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -119,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `profile_picture` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `users`
@@ -132,7 +145,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `email`, `name`, `created_on`
 (4, '1234', '123456', 'test12@test.com', 'test1234', '2014-08-31 17:01:51', NULL, NULL),
 (5, 'testdev', '123456', 'testdev@test.com', 'testDev', '2014-08-31 17:04:59', NULL, NULL),
 (6, 'CPowellCEO', 'test', 'powell7365@gmail.com', 'Christopher Powell', '2014-09-01 18:28:12', NULL, NULL),
-(7, 'Jackie', 'test', 'jackiepipa@gmail.com', 'Jackie ', '2014-09-04 00:56:03', NULL, NULL);
+(7, 'Jackie', 'test', 'jackiepipa@gmail.com', 'Jackie ', '2014-09-04 00:56:03', NULL, NULL),
+(12, 'Cpow1', 'test', 'guiltless2011@gmail.com', 'cpow', '2014-09-07 05:37:11', NULL, NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
